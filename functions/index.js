@@ -6,6 +6,9 @@ admin.initializeApp();
 const express = require("express");
 const app = express();
 
+const cors = require("cors");
+app.use(cors());
+
 // Get orders
 app.get("/orders", (req, res) => {
   admin
@@ -66,8 +69,6 @@ app.post("/order", (req, res) => {
       console.error(err);
     });
 });
-
-// https://baseurl.com/api/
 
 exports.api = functions
   .region("europe-west3")
