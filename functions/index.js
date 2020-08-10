@@ -1,13 +1,31 @@
 const functions = require("firebase-functions");
-const admin = require("firebase-admin");
 
+const admin = require("firebase-admin");
 admin.initializeApp();
 
-const express = require("express");
-const app = express();
+const app = require("express")();
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAuxwaJj_axUbxU60V6fE-DwxJ3r9l7U-Y",
+  authDomain: "ski-service-91995.firebaseapp.com",
+  databaseURL: "https://ski-service-91995.firebaseio.com",
+  projectId: "ski-service-91995",
+  storageBucket: "ski-service-91995.appspot.com",
+  messagingSenderId: "909321376334",
+  appId: "1:909321376334:web:d427cc7e65c291841b291f",
+  measurementId: "G-SYH1NLPPCL",
+};
+
+const firebase = require("firebase");
+firebase.initializeApp(firebaseConfig);
 
 const cors = require("cors");
+const {
+  user,
+} = require("firebase-functions/lib/providers/auth");
 app.use(cors());
+
+const db = admin.firestore();
 
 // Get orders
 app.get("/orders", (req, res) => {
@@ -53,9 +71,7 @@ app.post("/order", (req, res) => {
     createdAt: new Date().toISOString(),
   };
 
-  admin
-    .firestore()
-    .collection("orders")
+  db.collection("orders")
     .add(newOrder)
     .then((doc) => {
       res.json({
@@ -67,6 +83,58 @@ app.post("/order", (req, res) => {
         .status(500)
         .json({ error: "something went wrong" });
       console.error(err);
+    });
+});
+
+// signup
+app.post("/signup", (req, res) => {
+  const newUser = {
+    email: req.body.email,
+    password: req.body.password,
+    confirmPassword: req.body.confirmPassword,
+    handle: req.body.handle,
+  };
+
+  let token;
+  db.doc(`/users/${newUser.handle}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        return res
+          .status(400)
+          .json({ handle: `nazwa jest już zajęta` });
+      } else {
+        return firebase
+          .auth()
+          .createUserWithEmailAndPassword(
+            newUser.email,
+            newUser.password
+          );
+      }
+    })
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then((token) => {
+      token = token;
+      const userCredentials = {
+        handle: newUser.handle,
+        email: newUser.email,
+        createdAt: new Date().toISOString(),
+        userId,
+      };
+
+      return db
+        .doc(`/users/${newUser.handle}`)
+        .set(userCredentials);
+    })
+    .then(() => {
+      return res.status(201).json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
     });
 });
 

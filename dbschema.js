@@ -9,7 +9,6 @@ let db = {
       diamond: "tak",
       snow: "mokry",
       fluor: "tak",
-      pickupDate: "2019-03-15T11:46:01.018Z",
     },
   ],
 };
