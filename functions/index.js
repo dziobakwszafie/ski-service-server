@@ -1,10 +1,12 @@
+//Firebase
 const functions = require("firebase-functions");
-
 const admin = require("firebase-admin");
+
+//Express
+const app = require("express")();
 admin.initializeApp();
 
-const app = require("express")();
-
+//Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAuxwaJj_axUbxU60V6fE-DwxJ3r9l7U-Y",
   authDomain: "ski-service-91995.firebaseapp.com",
@@ -19,15 +21,17 @@ const firebaseConfig = {
 const firebase = require("firebase");
 firebase.initializeApp(firebaseConfig);
 
+//CORS
 const cors = require("cors");
 const {
   user,
 } = require("firebase-functions/lib/providers/auth");
 app.use(cors());
 
+//Just a shortcut
 const db = admin.firestore();
 
-// Get orders
+//GET ORDERS
 app.get("/orders", (req, res) => {
   admin
     .firestore()
@@ -57,7 +61,7 @@ app.get("/orders", (req, res) => {
     });
 });
 
-// Post order
+//POST ORDER
 app.post("/order", (req, res) => {
   const newOrder = {
     name: req.body.name,
@@ -86,7 +90,7 @@ app.post("/order", (req, res) => {
     });
 });
 
-// signup
+//SIGNUP
 app.post("/signup", (req, res) => {
   const newUser = {
     email: req.body.email,
@@ -95,7 +99,8 @@ app.post("/signup", (req, res) => {
     handle: req.body.handle,
   };
 
-  let token;
+  //let token;
+
   db.doc(`/users/${newUser.handle}`)
     .get()
     .then((doc) => {
@@ -113,23 +118,22 @@ app.post("/signup", (req, res) => {
       }
     })
     .then((data) => {
-      userId = data.user.uid;
       return data.user.getIdToken();
     })
-    .then((token) => {
-      token = token;
-      const userCredentials = {
-        handle: newUser.handle,
-        email: newUser.email,
-        createdAt: new Date().toISOString(),
-        userId,
-      };
+    // .then((token) => {
+    //   token = token;
+    //   const userCredentials = {
+    //     handle: newUser.handle,
+    //     email: newUser.email,
+    //     createdAt: new Date().toISOString(),
+    //     userId,
+    //   };
 
-      return db
-        .doc(`/users/${newUser.handle}`)
-        .set(userCredentials);
-    })
-    .then(() => {
+    //   return db
+    //     .doc(`/users/${newUser.handle}`)
+    //     .set(userCredentials);
+    // })
+    .then((token) => {
       return res.status(201).json({ token });
     })
     .catch((err) => {
@@ -138,9 +142,7 @@ app.post("/signup", (req, res) => {
     });
 });
 
+//Server
 exports.api = functions
   .region("europe-west3")
   .https.onRequest(app);
-
-// odpalić funkcje w panelu na stronie
-// odpalić baze w panelu na stronie
