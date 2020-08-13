@@ -62,9 +62,45 @@ app.get("/orders", (req, res) => {
 });
 
 //POST ORDER
-app.post("/order", (req, res) => {
+const FBAuth = (req, res, next) => {
+  let idToken;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+    idToken = req.headers.authorization.split("Bearer ")[1];
+  } else {
+    console.error("Nie ma tokenu");
+    return res
+      .status(403)
+      .json({ error: "Nieautoryzowane" });
+  }
+
+  admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then((decodedToken) => {
+      req.user = decodedToken;
+      console.log(decodedToken);
+      return db
+        .collection("users")
+        .where("userId", "==", req.user.uid)
+        .limit(1)
+        .get();
+    })
+    .then((data) => {
+      req.user.name = data.docs[0].data().name;
+      return next();
+    })
+    .catch((err) => {
+      console.error("Błąd podczas weryfikacji", err);
+      return res.status(403).json(err);
+    });
+};
+
+app.post("/order", FBAuth, (req, res) => {
   const newOrder = {
-    name: req.body.name,
+    name: req.user.name,
     email: req.body.email,
     phone: req.body.phone,
     sideAngle: req.body.sideAngle,
@@ -90,6 +126,8 @@ app.post("/order", (req, res) => {
     });
 });
 
+//SIGNUP
+
 const isEmail = (email) => {
   const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (email.match(regEx)) return true;
@@ -101,7 +139,6 @@ const isEmpty = (string) => {
   else return false;
 };
 
-//SIGNUP
 app.post("/signup", (req, res) => {
   const newUser = {
     email: req.body.email,
@@ -197,7 +234,7 @@ app.post("/login", (req, res) => {
     .auth()
     .signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
-      return data.user.getIdtoken();
+      return data.user.getIdToken();
     })
     .then((token) => {
       return res.json({ token });
