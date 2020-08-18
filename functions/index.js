@@ -36,16 +36,16 @@ app.get("/orders", (req, res) => {
   admin
     .firestore()
     .collection("orders")
-    .orderBy("name")
+    .orderBy("email")
     .get()
     .then((data) => {
       let orders = [];
       data.forEach((doc) => {
         orders.push({
           orderId: doc.id,
-          name: doc.data().name,
           email: doc.data().email,
-          phone: doc.data().phone,
+          skis: doc.data().skis,
+          length: doc.data().length,
           sideAngle: doc.data().sideAngle,
           bottomAngle: doc.data().bottomAngle,
           diamond: doc.data().diamond,
@@ -89,7 +89,7 @@ const FBAuth = (req, res, next) => {
         .get();
     })
     .then((data) => {
-      req.user.name = data.docs[0].data().name;
+      req.user.email = data.docs[0].data().email;
       return next();
     })
     .catch((err) => {
@@ -100,9 +100,9 @@ const FBAuth = (req, res, next) => {
 
 app.post("/order", FBAuth, (req, res) => {
   const newOrder = {
-    name: req.user.name,
-    email: req.body.email,
-    phone: req.body.phone,
+    email: req.user.email,
+    skis: req.body.skis,
+    length: req.body.length,
     sideAngle: req.body.sideAngle,
     bottomAngle: req.body.bottomAngle,
     diamond: req.body.diamond,
@@ -153,24 +153,23 @@ app.post("/signup", (req, res) => {
 
   if (isEmpty(newUser.email)) {
     errors.email = "Email is empty";
-  } else if (!isEmail(newUser.email)) {
+  } else if (!isEmail(newUser.email))
     errors.email = "Must be a valid email address";
-  }
-  if (!isEmpty(newUser.password))
+  if (isEmpty(newUser.password))
     errors.password = "Password is empty";
   if (newUser.password !== newUser.confirmPassword)
     errors.confirmPassword = "Password must match";
-  if (!isEmpty(newUser.name)) errors.name = "Name is empty";
+  if (isEmpty(newUser.name)) errors.name = "Name is empty";
   if (Object.keys(errors).length > 0)
     return res.status(400).json(errors);
 
-  db.doc(`/users/${newUser.name}`)
+  db.doc(`/users/${newUser.email}`)
     .get()
     .then((doc) => {
       if (doc.exists) {
         return res
           .status(400)
-          .json({ name: `nazwa jest już zajęta` });
+          .json({ email: `Ten email jest już używany` });
       } else {
         return firebase
           .auth()
@@ -195,7 +194,7 @@ app.post("/signup", (req, res) => {
       };
 
       return db
-        .doc(`/users/${newUser.name}`)
+        .doc(`/users/${newUser.email}`)
         .set(userCredentials);
     })
     .then(() => {
