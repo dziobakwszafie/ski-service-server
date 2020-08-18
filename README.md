@@ -8,7 +8,7 @@ https://www.robinwieruch.de/react-hooks-fetch-data
 ### GET
 
 ```
-http://localhost:5000/ski-service-91995/europe-west3/api/orders
+/api/orders
 ```
 
 Responce:
@@ -29,7 +29,7 @@ Responce:
 
 ```
 
-http://localhost:5000/ski-service-91995/europe-west3/api/order
+/api/order
 
 ```
 
@@ -54,7 +54,7 @@ Body:
 
 ```
 
-http://localhost:5000/ski-service-91995/europe-west3/api/signup
+/api/signup
 
 ```
 
@@ -72,7 +72,7 @@ Body:
 
 ```
 
-http://localhost:5000/ski-service-91995/europe-west3/api/login
+/api/login
 
 ```
 
