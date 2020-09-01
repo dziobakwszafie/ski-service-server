@@ -1,6 +1,8 @@
 let db = {
   orders: [
     {
+      createdAt: "2019-03-15T10:59:52.798Z",
+      email: "test12.@test.pl",
       skis: "Voelkl",
       length: "123",
       sideAngle: "88",
@@ -10,4 +12,12 @@ let db = {
       fluor: "tak",
     },
   ],
+  users: {
+    email: "test12.@test.pl",
+    createdAt: "2019-03-15T10:59:52.798Z",
+    password: "test12",
+    confirmPassword: "test12",
+    name: "Marian Bułka",
+    phone: "123456789",
+  },
 };

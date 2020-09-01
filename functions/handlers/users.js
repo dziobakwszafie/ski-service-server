@@ -1,4 +1,4 @@
-const { admin, db } = require("../util/admin");
+const { db } = require("../util/admin");
 const firebaseConfig = require("../util/firebaseConfig");
 
 //Firebase
@@ -32,7 +32,7 @@ exports.signup = (req, res) => {
       if (doc.exists) {
         return res
           .status(400)
-          .json({ email: `Ten email jest już używany` });
+          .json({ email: "Ten email jest już używany" });
       } else {
         return firebase
           .auth()
@@ -96,6 +96,11 @@ exports.login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).json({ error: err.code });
+      if (err.code === "auth/wrong-password") {
+        return res.status(403).json({
+          general: "Wrong credentials, please try again",
+        });
+      } else
+        return res.status(500).json({ error: err.code });
     });
 };

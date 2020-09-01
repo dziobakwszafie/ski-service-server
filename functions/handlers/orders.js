@@ -1,9 +1,7 @@
-const { admin, db } = require("../util/admin");
+const { db } = require("../util/admin");
 
 exports.getOrders = (req, res) => {
-  admin
-    .firestore()
-    .collection("orders")
+  db.collection("orders")
     .orderBy("email")
     .get()
     .then((data) => {
