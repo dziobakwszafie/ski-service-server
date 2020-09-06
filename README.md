@@ -82,3 +82,11 @@ Body:
 "email": "test12@test.com",
 "password": "test12"
 }
+
+1. post order
+2. login
+3. signup
+4. get user orders
+5. get user credentials
+
+https://stackoverflow.com/questions/42043611/could-not-load-the-default-credentials-node-js-google-compute-engine-tutorial?fbclid=IwAR24gYo425KNUkO43oeBeufzCp_dt2L1gaiU3IJLI-7WJT-ZvXNdh02PjVY

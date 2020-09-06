@@ -12,11 +12,24 @@ let db = {
       fluor: "tak",
     },
   ],
-  users: {
+  users: [
+    {
+      email: "test12.@test.pl",
+      createdAt: "2019-03-15T10:59:52.798Z",
+      password: "test12",
+      confirmPassword: "test12",
+      name: "Marian Bułka",
+      phone: "123456789",
+    },
+  ],
+};
+const userDetails = {
+  // Redux data
+  credentials: {
+    userId: "N43KJ5H43KJHREW4J5H3JWMERHB",
     email: "test12.@test.pl",
     createdAt: "2019-03-15T10:59:52.798Z",
     password: "test12",
-    confirmPassword: "test12",
     name: "Marian Bułka",
     phone: "123456789",
   },
