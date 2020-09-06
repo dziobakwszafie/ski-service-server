@@ -22,6 +22,14 @@ let db = {
       phone: "123456789",
     },
   ],
+  comments: [
+    {
+      email: "user",
+      orderId: "kdjsfgdksuufhgkdsufky",
+      commentBody: "nice one mate!",
+      createdAt: "2019-03-15T10:59:52.798Z",
+    },
+  ],
 };
 const userDetails = {
   // Redux data

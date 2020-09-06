@@ -90,3 +90,14 @@ Body:
 5. get user credentials
 
 https://stackoverflow.com/questions/42043611/could-not-load-the-default-credentials-node-js-google-compute-engine-tutorial?fbclid=IwAR24gYo425KNUkO43oeBeufzCp_dt2L1gaiU3IJLI-7WJT-ZvXNdh02PjVY
+
+Firebase config na kompie bo inaczej nie bezie działało wysyłanie requestów przy zabezpieczonym api
+
+pobrać to:
+https://cloud.google.com/sdk/docs/quickstart-windows
+i zantalowac
+potem
+via PowerShell
+gcloud init
+then
+gcloud auth application-default login

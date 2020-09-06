@@ -48,9 +48,65 @@ exports.postOrder = (req, res) => {
       });
     })
     .catch((err) => {
-      res
-        .status(500)
-        .json({ error: "something went wrong" });
+      res.status(500).json({ error: "something went wrong" });
       console.error(err);
+    });
+};
+
+exports.getOrder = (req, res) => {
+  let orderData = {};
+  db.doc(`/orders/${req.params.orderId}`)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Zamówienia nie znaleziono" });
+      }
+      orderData = doc.data();
+      orderData.orderId = doc.id;
+      return db
+        .collection("comments")
+        .orderBy("createdAt", "desc")
+        .where("orderId", "==", req.params.orderId)
+        .get();
+    })
+    .then((data) => {
+      orderData.comments = [];
+      data.forEach((doc) => {
+        orderData.comments.push(doc.data());
+      });
+      return res.json(orderData);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: err.code });
+    });
+};
+
+exports.commentOnOrder = (req, res) => {
+  if (req.body.commentBody.trim() === "")
+    return res.status(400).json({ error: "Pole nie może być puste" });
+
+  const newComment = {
+    commentBody: req.body.commentBody,
+    createdAt: new Date().toISOString(),
+    orderId: req.params.orderId,
+    email: req.user.email,
+  };
+  console.log(newComment);
+
+  db.doc(`/orders/${req.params.orderId}`)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Zamówienia nie znaleziono" });
+      }
+      return db.collection("comments").add(newComment);
+    })
+    .then(() => {
+      res.json(newComment);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "Coś poszło nie tak" });
     });
 };

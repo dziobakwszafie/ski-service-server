@@ -10,7 +10,12 @@ const cors = require("cors");
 app.use(cors());
 
 //Imports
-const { getOrders, postOrder } = require("./handlers/orders");
+const {
+  getOrders,
+  postOrder,
+  getOrder,
+  commentOnOrder,
+} = require("./handlers/orders");
 const {
   signup,
   login,
@@ -21,6 +26,8 @@ const {
 //Order routes
 app.get("/orders", getOrders);
 app.post("/order", FBAuth, postOrder);
+app.get("/order/:orderId", getOrder);
+app.post("/order/:orderId/comment", FBAuth, commentOnOrder);
 
 //User routes
 app.post("/signup", signup);
