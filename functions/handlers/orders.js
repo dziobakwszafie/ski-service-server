@@ -43,9 +43,9 @@ exports.postOrder = (req, res) => {
   db.collection("orders")
     .add(newOrder)
     .then((doc) => {
-      res.json({
-        message: `document ${doc.id} created successfully`,
-      });
+      const resOrder = newOrder;
+      resOrder.orderId = doc.id;
+      res.json(resOrder);
     })
     .catch((err) => {
       res.status(500).json({ error: "something went wrong" });
@@ -108,5 +108,28 @@ exports.commentOnOrder = (req, res) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: "Coś poszło nie tak" });
+    });
+};
+
+exports.deleteOrder = (req, res) => {
+  const document = db.doc(`/orders/${req.params.orderId}`);
+  document
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Zamówienie nie istnieje" });
+      }
+      if (doc.data().email !== req.user.email) {
+        return res.status(403).json({ error: "Użytkownik niezalogowany" });
+      } else {
+        return document.delete();
+      }
+    })
+    .then(() => {
+      res.json({ message: "Zamówienie usunięte" });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
     });
 };

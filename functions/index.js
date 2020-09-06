@@ -15,6 +15,7 @@ const {
   postOrder,
   getOrder,
   commentOnOrder,
+  deleteOrder,
 } = require("./handlers/orders");
 const {
   signup,
@@ -28,6 +29,7 @@ app.get("/orders", getOrders);
 app.post("/order", FBAuth, postOrder);
 app.get("/order/:orderId", getOrder);
 app.post("/order/:orderId/comment", FBAuth, commentOnOrder);
+app.delete("/orders/:orderId/delete", FBAuth, deleteOrder);
 
 //User routes
 app.post("/signup", signup);
