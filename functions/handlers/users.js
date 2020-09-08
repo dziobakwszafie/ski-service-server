@@ -104,10 +104,17 @@ exports.getAuthenticatedUser = (req, res) => {
       if (doc.exists) {
         userData.credentials = doc.data();
         return db
-          .collection("likes")
+          .collection("orders")
           .where("email", "==", req.user.email)
           .get();
       }
+    })
+    .then((data) => {
+      userData.orders = [];
+      data.forEach((doc) => {
+        userData.orders.push(doc.data());
+      });
+      return res.json(userData);
     })
     .catch((err) => {
       console.error(err);
