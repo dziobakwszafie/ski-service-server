@@ -42,6 +42,13 @@ firebase deploy
 
 ## Built With
 
+- [React](https://reactjs.org/)
+- [Redux](https://redux.js.org/)
+- [redux-thunk](https://github.com/reduxjs/redux-thunk)
+- [styled-components](https://styled-components.com/)
+- [Chakra-ui](https://chakra-ui.com/)
+- [Material-UI](https://material-ui.com/)
+- [Formik](https://formik.org/)
 - [Firebase](https://firebase.google.com/)
 - [Express](https://expressjs.com/)
 - [Node.js](https://nodejs.org/en/)
