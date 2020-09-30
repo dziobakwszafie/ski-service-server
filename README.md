@@ -1,6 +1,8 @@
 # Ski service server
 
-Project of ski service app.
+Project of ski service app - still under develope, planned release winter 20/21. Backend part.
+
+[![CodeFactor](https://www.codefactor.io/repository/github/dziobakwszafie/ski-service-server/badge)](https://www.codefactor.io/repository/github/dziobakwszafie/ski-service-server)
 
 ## Project Status
 
